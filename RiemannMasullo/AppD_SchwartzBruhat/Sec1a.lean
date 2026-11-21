@@ -582,7 +582,30 @@ def elementaryPartial (f : ElementaryLieGroup m n r F → ℂ)
 pullback of the function to the cover. -/
 theorem elementaryPartial_zero (f : ElementaryLieGroup m n r F → ℂ)
     (xt : EuclideanSpace ℝ (Fin m) × EuclideanSpace ℝ (Fin n)) (a : Fin r → ℤ) (b : F) :
-    elementaryPartial f 0 0 xt a b = f (elementaryCover xt a b) := by sorry
+    elementaryPartial f 0 0 xt a b = f (elementaryCover xt a b) := by
+  let X := EuclideanSpace ℝ (Fin m) × EuclideanSpace ℝ (Fin n)
+  let directions : List X :=
+    ((List.ofFn (fun _ : Fin m ↦ ([] : List X))).flatten ++
+      (List.ofFn (fun _ : Fin n ↦ ([] : List X))).flatten)
+  have hnil (k : ℕ) : (List.replicate k ([] : List X)).flatten = [] := by
+    induction k with
+    | zero => rfl
+    | succ j ih => rw [List.replicate_succ, List.flatten_cons, ih]; rfl
+  have hdir : directions = [] := by
+    dsimp [directions]
+    rw [List.ofFn_const, List.ofFn_const]
+    rw [hnil m, hnil n]
+    rfl
+  have hlen : directions.length = 0 := by rw [hdir]; rfl
+  simp only [elementaryPartial]
+  change (iteratedFDeriv ℝ directions.length (fun v ↦ f (elementaryCover v a b)) xt)
+      directions.get = f (elementaryCover xt a b)
+  have hiter (k : ℕ) (hk : k = 0) (d : Fin k → X) :
+      (iteratedFDeriv ℝ k (fun v ↦ f (elementaryCover v a b)) xt) d =
+        f (elementaryCover xt a b) := by
+    subst k
+    exact iteratedFDeriv_zero_apply d
+  exact hiter directions.length hlen directions.get
 
 /-- Paper: (D.1.3.4), p. 750. The lifted partials of a smooth fibre are smooth
 and have the same value at any two lifts of a given group point. -/
