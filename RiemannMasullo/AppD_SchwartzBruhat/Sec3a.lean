@@ -197,7 +197,7 @@ def realSchwartzCoe : 𝓢(ℝ, ℂ) →ₗ[ℂ] (ℝ → ℂ) where
 
 /-- Paper: Definition D.3.2.1, p. 801. Forgetting the Schwartz properties
 retains the values of the function. -/
-theorem realSchwartzCoe_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) : realSchwartzCoe f x = f x := by sorry
+theorem realSchwartzCoe_apply (f : 𝓢(ℝ, ℂ)) (x : ℝ) : realSchwartzCoe f x = f x := rfl
 
 /-- Paper: Definition D.3.2.1, p. 801. In logarithmic coordinates, weighting
 by tᵃ amounts to multiplying by exp(ax). -/
