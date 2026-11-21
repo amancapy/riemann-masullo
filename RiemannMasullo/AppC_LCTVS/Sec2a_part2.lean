@@ -967,14 +967,49 @@ theorem tensorDualOperator_continuous_mu {X : Type*} [AddCommGroup X] [Module �
 -- TODO(paper-gap): Remark C.2.3.3 refers to a Pták open mapping theorem without stating
 -- the map, the hypotheses on the target, or the conclusion in full.
 
+open scoped Pointwise in
 include hE hF in
+omit sE sF in
 /-- Paper: (C.2.3.7), p. 677. On a given tensor the injective seminorm is the
 supremum of the absolute evaluations on the two polars. -/
 theorem injectiveTensorSeminorm_apply
     (U : {U : Set E // U ∈ 𝓝 0}) (V : {V : Set F // V ∈ 𝓝 0}) (z : E ⊗[ℂ] F) :
     injectiveTensorSeminorm U V z =
       ⨆ φ : StrongDual.polar ℂ U.val, ⨆ ψ : StrongDual.polar ℂ V.val,
-        ‖tensorDualForm φ.val ψ.val z‖ := by sorry
+        ‖tensorDualForm φ.val ψ.val z‖ := by
+  let D := StrongDual.polar ℂ U.val × StrongDual.polar ℂ V.val
+  let p (f : D) := (normSeminorm ℂ ℂ).comp (tensorDualForm f.1.val f.2.val)
+  have hb : BddAbove (range p) := by
+    apply Seminorm.bddAbove_range_iff.mpr
+    intro w
+    induction w using TensorProduct.inductionOn with
+    | tmul x y =>
+        obtain ⟨a, x', hx', rfl⟩ : ∃ a : ℂ, x ∈ a • U.val :=
+          by simpa using (absorbent_nhds_zero (𝕜 := ℂ) U.property x).exists
+        obtain ⟨b, y', hy', rfl⟩ : ∃ b : ℂ, y ∈ b • V.val :=
+          by simpa using (absorbent_nhds_zero (𝕜 := ℂ) V.property y).exists
+        refine ⟨‖a‖ * ‖b‖, forall_mem_range.mpr fun f ↦ ?_⟩
+        have hφ := (StrongDual.mem_polar_iff ℂ _).mp f.1.property x' hx'
+        have hψ := (StrongDual.mem_polar_iff ℂ _).mp f.2.property y' hy'
+        change ‖tensorDualForm f.1.val f.2.val ((a • x') ⊗ₜ[ℂ] (b • y'))‖ ≤ _
+        rw [tensorDualForm_tmul, norm_mul, map_smul, map_smul, norm_smul, norm_smul]
+        exact mul_le_mul (mul_le_of_le_one_right (norm_nonneg _) hφ)
+          (mul_le_of_le_one_right (norm_nonneg _) hψ)
+          (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (norm_nonneg _)
+    | add w₁ w₂ h₁ h₂ =>
+        obtain ⟨C₁, h₁⟩ := h₁
+        obtain ⟨C₂, h₂⟩ := h₂
+        exact ⟨C₁ + C₂, forall_mem_range.mpr fun f ↦
+          (map_add_le_add (p f) w₁ w₂).trans
+            (add_le_add (h₁ (mem_range_self f)) (h₂ (mem_range_self f)))⟩
+  unfold injectiveTensorSeminorm
+  rw [← ciSup_prod hb]
+  rw [Seminorm.iSup_apply hb]
+  have hbz : BddAbove (range (fun f : D ↦ ‖tensorDualForm f.1.val f.2.val z‖)) := by
+    simpa [p, Seminorm.comp_apply] using (Seminorm.bddAbove_range_iff.mp hb) z
+  simp only [p, Seminorm.comp_apply]
+  rw [coe_normSeminorm]
+  rw [ciSup_prod hbz]
 
 end Injective
 
