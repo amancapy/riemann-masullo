@@ -5,6 +5,7 @@ public import Mathlib.Analysis.Distribution.SchwartzSpace.Basic
 public import Mathlib.MeasureTheory.Function.L2Space
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.MeasureTheory.Measure.Haar.Quotient
+public import Mathlib.MeasureTheory.Group.Integral
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Topology.Algebra.PontryaginDual
 public import Mathlib.Topology.ContinuousMap.ZeroAtInfty
@@ -442,7 +443,20 @@ the quotient integral agrees with integration using that representative. -/
 theorem lcaCosetIntegral_mk (μH : Measure H) [μH.IsHaarMeasure] (f : G → ℂ) (x : G)
     (hf : Integrable (fun h : H ↦ f (x * (h : G))) μH) :
     lcaCosetIntegral H μH f (QuotientGroup.mk x) =
-      ∫ h : H, f (x * (h : G)) ∂μH := by sorry
+      ∫ h : H, f (x * (h : G)) ∂μH := by
+  rw [lcaCosetIntegral]
+  set y : G := Quotient.out (QuotientGroup.mk x) with hydef
+  have hy : QuotientGroup.mk y = QuotientGroup.mk x := Quotient.out_eq' _
+  have hk : y⁻¹ * x ∈ H := QuotientGroup.eq.mp hy
+  let k : H := ⟨y⁻¹ * x, hk⟩
+  have hxe : x = y * (k : G) := by
+    simp [k]
+  rw [hxe]
+  have hassoc : ∀ h : H, y * (k : G) * (h : G) = y * ((k * h : H) : G) := by
+    intro h
+    rw [Subgroup.coe_mul, mul_assoc]
+  simp_rw [hassoc]
+  exact (MeasureTheory.integral_mul_left_eq_self (fun h : H ↦ f (y * (h : G))) k).symm
 
 /-- Paper: Theorem D.1.2.1, p. 747. A regular Haar measure on the quotient
 is normalized by Weil's formula on continuous compactly supported test functions. -/
