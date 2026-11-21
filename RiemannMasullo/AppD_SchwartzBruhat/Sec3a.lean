@@ -124,7 +124,8 @@ def weightedVerticalTrace (a : ℝ) (N : ℕ) (f : ℂ → ℂ) (x : ℝ) : ℂ 
 /-- Paper: (D.3.1.7), p. 799. At zero height, the trace evaluates the weighted
 function on the real axis. -/
 theorem weightedVerticalTrace_zero_height (a : ℝ) (N : ℕ) (f : ℂ → ℂ) :
-    weightedVerticalTrace a N f 0 = (a : ℂ) ^ N * f a := by sorry
+    weightedVerticalTrace a N f 0 = (a : ℂ) ^ N * f a := by
+  simp [weightedVerticalTrace]
 
 /-- Paper: Lemma D.3.1.2, p. 799. Each polynomially weighted trace belongs to
 the indicated Lᵖ space.
