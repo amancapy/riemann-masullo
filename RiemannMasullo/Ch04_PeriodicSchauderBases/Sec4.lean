@@ -309,7 +309,9 @@ def modulatedCyclicCharacter (j : J) : PontryaginDual Q :=
 /-- Paper: Equation (4.4.2.4), p. 193. The quotient character takes its
 prescribed value at every representative. -/
 theorem modulatedCyclicCharacter_mk (j : J) (x : G) :
-    modulatedCyclicCharacter m γ hγ χ t₀ ht₀ j (QuotientGroup.mk x) = expValue[j, x] := by sorry
+    modulatedCyclicCharacter m γ hγ χ t₀ ht₀ j (QuotientGroup.mk x) = expValue[j, x] := by
+  simp only [modulatedCyclicCharacter]
+  rfl
 
 -- TODO(paper-gap): The proof on p. 193 chooses t₁ in an interval open at zero.
 -- For the trivial lift this forces t₀ = -t₁ to be the excluded upper endpoint.
