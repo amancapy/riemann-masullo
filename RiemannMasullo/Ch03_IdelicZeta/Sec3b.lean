@@ -473,7 +473,14 @@ def wirtingerConjDeriv (f : ℂ → ℂ) (z : ℂ) : ℂ :=
 the coordinate function from its conjugate. -/
 theorem wirtingerDeriv_id_conj (z : ℂ) :
     wirtingerDeriv id z = 1 ∧ wirtingerDeriv star z = 0 ∧
-      wirtingerConjDeriv id z = 0 ∧ wirtingerConjDeriv star z = 1 := by sorry
+      wirtingerConjDeriv id z = 0 ∧ wirtingerConjDeriv star z = 1 := by
+  have hconj : fderiv ℝ (⇑(starRingEnd ℂ)) z = (Complex.conjLIE.toContinuousLinearMap) := by
+    have hfun : (⇑Complex.conjLIE : ℂ → ℂ) = (⇑(starRingEnd ℂ) : ℂ → ℂ) := by
+      funext w
+      exact Complex.conjLIE_apply w
+    rw [← hfun]
+    exact Complex.conjLIE.toContinuousLinearMap.fderiv
+  simp [wirtingerDeriv, wirtingerConjDeriv, hconj, Complex.conjLIE_apply]
 
 /-- Paper: Lemma 3.3.2.1(2)(2), pp. 138–139. At a complex pole the residue
 is 2π times the Taylor coefficient of angular weight opposite to the character.
