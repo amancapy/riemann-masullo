@@ -444,7 +444,8 @@ def finiteAdeleTailProjection (S : Finset (Places(F))) (x : 𝔸ᶠ[F]) : Finite
 original coordinate at every omitted place. -/
 theorem finiteAdeleTailProjection_apply (S : Finset (Places(F))) (x : 𝔸ᶠ[F])
     (w : {w : Places(F) // w ∉ S}) :
-    finiteAdeleTailProjection F S x w = x w.val := by sorry
+    finiteAdeleTailProjection F S x w = x w.val := by
+  rfl
 
 /-- Paper: Proposition 2.1.4.1(1), p. 71. The inductive tensor product of the
 Archimedean factor with the finite tensor product of the local factors is
