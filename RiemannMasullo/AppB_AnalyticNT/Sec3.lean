@@ -65,7 +65,46 @@ def HasSlowGrowthNearPoles (f : ℂ → ℂ) (a b : ℝ) : Prop :=
 for the zero function on every nonempty strip.
 Deviation: Sanity check for the witness predicate. -/
 theorem witnessesSlowGrowthNearPoles_zero {a b : ℝ} (hab : a < b) :
-    WitnessesSlowGrowthNearPoles (fun _ ↦ 0) a b (fun k : ℤ ↦ (k : ℝ)) := by sorry
+    WitnessesSlowGrowthNearPoles (fun _ ↦ 0) a b (fun k : ℤ ↦ (k : ℝ)) := by
+  refine ⟨hab, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro x hx
+    exact ((analyticAt_const (v := (0 : ℂ)) (x := x)) :
+      AnalyticAt ℂ (fun _ : ℂ ↦ (0 : ℂ)) x).meromorphicAt
+  · intro m n hmn
+    have hmn' : (m : ℝ) ≤ (n : ℝ) := by exact_mod_cast hmn
+    have hm_nonneg : 0 ≤ (m : ℝ) := by positivity
+    have hn_nonneg : 0 ≤ (n : ℝ) := by positivity
+    simpa [abs_of_nonneg hm_nonneg, abs_of_nonneg hn_nonneg] using hmn'
+  · intro m n hmn
+    have hmn' : (m : ℝ) ≤ (n : ℝ) := by exact_mod_cast hmn
+    have hm_nonneg : 0 ≤ (m : ℝ) := by positivity
+    have hn_nonneg : 0 ≤ (n : ℝ) := by positivity
+    simpa [abs_neg, abs_of_nonneg hm_nonneg, abs_of_nonneg hn_nonneg] using hmn'
+  · have h₀ := (tendsto_intCast_atTop_atTop (R := ℝ)).comp
+      (Filter.tendsto_comap (f := abs) (x := atTop))
+    exact h₀.congr' (Filter.Eventually.of_forall (fun k => Int.cast_abs))
+  · refine ⟨1, by norm_num, ?_⟩
+    rw [Asymptotics.isBigO_iff]
+    refine ⟨1, ?_⟩
+    filter_upwards with k
+    simp [Real.norm_eq_abs]
+  · refine ⟨1, 1, by norm_num, by norm_num, ?_⟩
+    filter_upwards with k
+    simp
+  · intro k
+    refine ⟨1, by norm_num, ?_⟩
+    exact differentiableOn_const (c := (0 : ℂ))
+  · refine ⟨1, 1, by norm_num, by norm_num, ?_⟩
+    intro k hk σ hσ
+    simp
+  · refine ⟨(b - a) / 4, (b - a) / 3, ?_, ?_, ?_, ?_⟩
+    · positivity
+    · nlinarith
+    · nlinarith
+    · intro σ hσ
+      refine ⟨continuous_const, 1, by norm_num, ?_⟩
+      change (fun _ : ℝ ↦ (0 : ℂ)) =O[atAbsInfty] (fun y : ℝ ↦ |y| ^ 1)
+      exact Asymptotics.isBigO_zero (fun y : ℝ ↦ |y| ^ 1) (comap abs atTop)
 
 /-- Paper: Definition B.3.1.1, p. 604. The reciprocal function has slow growth on
 the strip with real parts between −1 and 1, and has a simple pole at zero.
