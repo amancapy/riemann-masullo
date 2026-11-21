@@ -206,7 +206,9 @@ def logExponentialWeight (a : ℝ) : (ℝ → ℂ) →ₗ[ℂ] (ℝ → ℂ) :=
 
 /-- Paper: Definition D.3.2.1, p. 801. The weight at exponent zero does not
 change the function. -/
-theorem logExponentialWeight_zero (f : ℝ → ℂ) : logExponentialWeight 0 f = f := by sorry
+theorem logExponentialWeight_zero (f : ℝ → ℂ) : logExponentialWeight 0 f = f := by
+  ext x
+  simp [logExponentialWeight, LinearMap.mulLeft]
 
 /-- Paper: Definition D.3.2.1, p. 801. A logarithmic profile belongs to the
 decay submodule if each weighted profile is a real-line Schwartz function.
