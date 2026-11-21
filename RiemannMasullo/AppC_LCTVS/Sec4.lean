@@ -47,7 +47,8 @@ def toPettisWeakCompletion : E →ₗ[ℂ] PettisWeakCompletion E :=
 /-- Paper: (C.4.1.1), p. 709. Evaluating the image of a vector at a
 continuous functional returns that functional's value on the vector. -/
 theorem toPettisWeakCompletion_apply (x : E) (φ : StrongDual ℂ E) :
-    (show Module.Dual ℂ (StrongDual ℂ E) from toPettisWeakCompletion E x) φ = φ x := by sorry
+    (show Module.Dual ℂ (StrongDual ℂ E) from toPettisWeakCompletion E x) φ = φ x := by
+  rfl
 
 variable {E}
 variable [IsTopologicalAddGroup E] [ContinuousSMul ℂ E] [PolynormableSpace ℂ E] [T2Space E]
